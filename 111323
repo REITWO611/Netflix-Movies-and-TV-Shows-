@@ -1,0 +1,21 @@
+## Rachel Li (SHU-YING, LI) 
+## Milestone 1 (2023.11.6) ALY6010 Probability Theory and Introductory Statistics
+
+netflix_titles <- read.csv("/Users/rachel/Desktop/ALY 6010/Milestone/netflix_titles.csv")
+
+# Use the function names to produce the column names for your data set.
+names(netflix_titles)
+head(netflix_titles)
+
+# Use the view function to view the data set in a separate tab.
+View(netflix_titles)
+
+# Use the glimpse function to view your data set in another configuration.
+install.packages("dplyr")
+library("dplyr")
+glimpse(netflix_titles)
+
+# install the janitor package and clean the column names.
+install.packages("janitor")
+library(janitor)
+netflix_titles <- clean_names(netflix_titles) #重新整理列名
