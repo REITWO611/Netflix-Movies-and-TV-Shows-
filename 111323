@@ -19,3 +19,142 @@ glimpse(netflix_titles)
 install.packages("janitor")
 library(janitor)
 netflix_titles <- clean_names(netflix_titles) #重新整理列名
+
+
+## Analysis of "Movies" vs "TV Shows"
+
+install.packages("ggplot2")
+library(ggplot2)
+
+# Create a data frame with type counts
+type_counts <- table(netflix_titles$type)
+type_counts_df <- data.frame(Type = names(type_counts), Count = as.vector(type_counts))
+
+# Create a ggplot bar plot
+ggplot(type_counts_df, aes(x = Type, y = Count, fill = Type)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of TV Shows and Movies on Netflix",
+       x = "Type",
+       y = "Count") +
+  scale_y_continuous(breaks = seq(0, 5000, by = 1000))
+
+
+
+# Check if there are any missing values in the dataset.
+any(is.na(netflix_titles)) #FALSE
+
+# Replace empty strings in the "date_added" data column with NA.
+netflix_titles$date_added[netflix_titles$date_added == ""] <- NA
+
+# Check for missing values in the data frame.
+any(is.na(netflix_titles)) #TRUE
+
+# Remove rows containing missing values.
+netflix_titles <- na.omit(netflix_titles)
+
+# Ensure the date field is in date format.
+netflix_titles$date_added <- as.Date(netflix_titles$date_added, format = "%B %d, %Y")
+
+# Create an order for the months.
+month_order <- c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+
+# Calculate the count of content additions by month.
+content_counts <- netflix_titles %>%
+  group_by(added_month = factor(format(date_added, "%B"), levels = month_order)) %>%
+  summarise(count = n())
+
+# Create a bar chart.
+ggplot(content_counts, aes(x = added_month, y = count, fill = added_month)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of Content Added by Month",
+       x = "Month",
+       y = "Count") +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+
+# Replace empty strings in the "country" data column with NA and remove leading and trailing spaces.
+netflix_titles$country[netflix_titles$countryd == ""] <- NA
+
+
+install.packages("stringr")
+library(stringr)
+
+# Replace empty strings with NA and remove leading and trailing spaces
+netflix_titles$country <- ifelse(netflix_titles$country == "", NA, str_trim(netflix_titles$country))
+
+# Check for missing values in the data frame
+any(is.na(netflix_titles)) #TRUE
+
+# Remove rows containing missing values
+cleaned_netflix_titles <- na.omit(netflix_titles)
+
+# Create a data frame with countries and the corresponding number of movies/TV shows
+country_counts_table <- cleaned_netflix_titles %>%
+  filter(type %in% c("Movie", "TV Show")) %>%
+  group_by(country) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))  
+
+# Print a table of countries and the counts
+print(country_counts_table)
+
+
+
+
+# Get data for the top ten countries
+top_countries <- head(country_counts_table, 10)
+
+# Create a horizontal bar chart
+ggplot(top_countries, aes(x = count, y = reorder(country, count), fill = country)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 10 Countries with the Most Movies/TV Shows on Netflix",
+       x = "Count",
+       y = "Country") +
+  scale_fill_manual(values = rainbow(nrow(top_countries))) +
+  theme_minimal()
+
+
+# Create a data frame containing only movies
+movies <- netflix_titles %>%
+  filter(type == "Movie")
+
+# Check the movie duration information
+head(movies$duration)
+
+# Extract the number of minutes from the duration information
+movies$duration <- as.integer(gsub(" min", "", movies$duration))
+
+# Check for missing values in the data frame
+any(is.na(movies$duration))
+
+# Create a histogram to visualize the distribution of movie durations
+library(ggplot2)
+ggplot(movies, aes(x = duration)) +
+  geom_histogram(binwidth = 10, fill = "#FF7F50", color = "black") +
+  labs(title = "Distribution of Movie Durations on Netflix",
+       x = "Duration (minutes)",
+       y = "Count") +
+  theme_minimal()
+
+
+# Create a data frame containing only TV shows
+tv_shows <- netflix_titles %>%
+  filter(type == "TV Show")
+
+# Set the duration information to the number of seasons
+tv_shows$duration <- as.integer(gsub(" Season(s)?", "", tv_shows$duration))
+
+# Check for missing values in the data frame
+any(is.na(tv_shows$duration))
+
+# Create a histogram to visualize the distribution of the number of seasons for TV shows
+ggplot(tv_shows, aes(x = duration)) +
+  geom_histogram(binwidth = 1, fill = "#66CDAA", color = "black") +
+  labs(title = "Distribution of TV Show Durations on Netflix",
+       x = "Seasons",
+       y = "Count") +
+  scale_x_continuous(breaks = seq(1, max(tv_shows$duration), by = 1)) +
+  theme_minimal()
