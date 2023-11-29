@@ -158,3 +158,54 @@ ggplot(tv_shows, aes(x = duration)) +
        y = "Count") +
   scale_x_continuous(breaks = seq(1, max(tv_shows$duration), by = 1)) +
   theme_minimal()
+
+
+
+
+
+        
+# Select data for movie genres
+movies_data <- netflix_titles %>% 
+filter(type == "Movie")
+        
+# Extract movie duration information
+movies_data$duration <- as.numeric(gsub(" min", "", movies_data$duration))
+        
+# Create a DataFrame to summarize the average duration of movies by year
+duration_by_year <- movies_data %>%
+ group_by(release_year) %>%
+ summarise(mean_duration = mean(duration, na.rm = TRUE))
+        
+# Create a line chart
+ggplot(duration_by_year, aes(x = release_year, y = mean_duration)) +
+  geom_line() +
+  labs(title = "Average Duration of Movies on Netflix by Year",
+   x = "Release Year",
+   y = "Average Duration (minutes)") +
+    theme_minimal()
+        
+
+# Select data for TV Show category
+tv_shows_data <- netflix_titles %>% 
+ filter(type == "TV Show")
+        
+# Extract TV Show duration information 
+ tv_shows_data$duration <- as.numeric(gsub(" Season[s]*", "", tv_shows_data$duration))
+        
+# Create a DataFrame to summarize the average duration of TV Shows by year
+ duration_by_year_tv <- tv_shows_data %>%
+  group_by(release_year) %>%
+  summarise(mean_duration = mean(duration, na.rm = TRUE))
+        
+# Create a line chart for the TV Show category
+ ggplot(duration_by_year_tv, aes(x = release_year, y = mean_duration)) +
+   geom_line() +
+   labs(title = "Average Season Count of TV Shows on Netflix by Year",
+     x = "Release Year",
+     y = "Average Season Count") +
+      theme_minimal()
+        
+  
+        
+        
+ 
