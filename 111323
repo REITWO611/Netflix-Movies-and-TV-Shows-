@@ -206,6 +206,9 @@ tv_shows_data <- netflix_titles %>%
       theme_minimal()
         
   
-        
-        
+
+
+
+
+
  
