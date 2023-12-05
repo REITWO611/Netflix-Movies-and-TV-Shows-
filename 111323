@@ -207,7 +207,16 @@ tv_shows_data <- netflix_titles %>%
         
   
 
+## Rachel Li (SHU-YING, LI) 
+## Milestone 2 (2023.11.27) ALY6010 Probability Theory and Introductory Statistics
+ 
+  
+# 單樣本 t 檢定
+t_test_duration <- t.test(movies_data$duration, mu = 100)
 
+# 輸出結果
+t_test_duration
+        
 
 
 
