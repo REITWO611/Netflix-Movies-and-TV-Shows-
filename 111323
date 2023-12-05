@@ -216,6 +216,19 @@ t_test_duration <- t.test(movies_data$duration, mu = 100)
 
 # 輸出結果
 t_test_duration
+
+ 
+ 
+# 分為兩個群組：最近 5 年和之前
+recent_movies <- movies_data %>% filter(release_year >= 2017)
+old_movies <- movies_data %>% filter(release_year < 2017)
+
+# 兩樣本 t 檢定
+t_test_two_samples <- t.test(recent_movies$duration, old_movies$duration)
+
+# 輸出結果
+t_test_two_samples
+
         
 
 
