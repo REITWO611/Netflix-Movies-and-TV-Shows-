@@ -14,7 +14,7 @@ View(netflix_titles)
 install.packages("dplyr")
 library("dplyr")
 glimpse(netflix_titles)
-
+   
 # install the janitor package and clean the column names.
 install.packages("janitor")
 library(janitor)
