@@ -9,7 +9,7 @@ head(netflix_titles)
 
 # Use the view function to view the data set in a separate tab.
 View(netflix_titles)
-
+ 
 # Use the glimpse function to view your data set in another configuration.
 install.packages("dplyr")
 library("dplyr")
